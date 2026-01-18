@@ -44,17 +44,21 @@ export async function GET(request, { params }) {
     }
 
     // Forward client IP to backend
+    // Use custom headers that are less likely to be modified by internal proxies
     if (clientIp) {
-      // If x-forwarded-for already exists, prepend our IP
+      // Set custom header with real client IP (most important - won't be overwritten by internal proxy)
+      forwardedHeaders['x-client-real-ip'] = clientIp
+      
+      // Also set x-forwarded-for (may be overwritten by proxy, but we have backup)
       if (forwardedFor) {
         forwardedHeaders['x-forwarded-for'] = `${clientIp}, ${forwardedFor}`
       } else {
         forwardedHeaders['x-forwarded-for'] = clientIp
       }
-      // Also set x-real-ip if not already set
-      if (!realIp) {
-        forwardedHeaders['x-real-ip'] = clientIp
-      }
+      // Also set x-real-ip
+      forwardedHeaders['x-real-ip'] = clientIp
+      
+      console.log('[Next.js UTM Redirect] Setting real client IP header:', clientIp)
     }
 
     console.log('[Next.js UTM Redirect] Forwarding headers to backend:', forwardedHeaders)

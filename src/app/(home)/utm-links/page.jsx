@@ -1,6 +1,6 @@
 "use client"
 
-import React, { useState } from 'react'
+import React, { useState, Suspense } from 'react'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
@@ -35,7 +35,7 @@ const utmLinkSchema = z.object({
   utmContent: z.string().optional(),
 })
 
-const page = () => {
+const UtmLinksContent = () => {
   const [copiedCode, setCopiedCode] = useState(null)
   const api = useApiClient()
   const queryClient = useQueryClient()
@@ -406,6 +406,24 @@ const page = () => {
         </TabsContent>
       </Tabs>
     </div>
+  )
+}
+
+const page = () => {
+  return (
+    <Suspense fallback={
+      <div className="px-4 lg:px-6">
+        <div className="mb-6">
+          <h1 className="text-3xl font-bold">UTM Links</h1>
+          <p className="text-muted-foreground mt-2">
+            Create and manage UTM tracking links for your campaigns
+          </p>
+        </div>
+        <div className="text-center py-8 text-muted-foreground">Loading...</div>
+      </div>
+    }>
+      <UtmLinksContent />
+    </Suspense>
   )
 }
 

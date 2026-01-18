@@ -47,7 +47,16 @@ export function NavUser({
           size="lg"
           className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground">
 
-          <UserButton />
+          <UserButton 
+            userProfileProps={{
+              appearance: {
+                elements: {
+                  // Hide billing/checkout sections to prevent "No checkout popup config found" error
+                  navbarButtonBilling: { display: 'none' },
+                },
+              },
+            }}
+          />
 
           <div className="grid flex-1 text-left text-sm leading-tight">
             <span className="truncate font-medium">{user?.fullName}</span>

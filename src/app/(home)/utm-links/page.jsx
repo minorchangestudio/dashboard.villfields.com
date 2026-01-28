@@ -6,7 +6,7 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import { useSearchParams, useRouter } from 'next/navigation'
 import * as z from 'zod'
-import { Copy, Plus, Check, Link as LinkIcon, ChevronLeft, ChevronRight, ChevronsLeft, ChevronsRight } from 'lucide-react'
+import { Copy, Plus, Check, Link as LinkIcon, ChevronLeft, ChevronRight, ChevronsLeft, ChevronsRight, Trash, Pencil } from 'lucide-react'
 import { toast } from 'sonner'
 import { useApiClient } from '@/lib/axios'
 
@@ -134,6 +134,25 @@ const UtmLinksContent = () => {
     const frontendUrl = typeof window !== 'undefined' ? window.location.origin : ''
     return `${frontendUrl}/r/${code}`
   }
+
+
+  const deleteUtmLink = (id) => {
+   if(confirm('Are you sure you want to delete this UTM link?')) {
+    api.delete(`/api/v1/utm-links/${id}`).then((response) => {
+      toast.success('UTM link deleted successfully!')
+      queryClient.invalidateQueries({ queryKey: ['utm-links'] })
+      // Switch to list tab after deletion
+      const listTab = document.querySelector('[value="list"]')
+      if (listTab) listTab.click()
+    }).catch((error) => {
+      toast.error(error.response?.data?.message || 'Failed to delete UTM link')
+    })
+   }
+  }
+
+
+
+
 
   return (
     <div className="px-4 lg:px-6">
@@ -306,6 +325,8 @@ const UtmLinksContent = () => {
                                   {link.is_active !== false ? 'Active' : 'Inactive'}
                                 </Badge>
                               </TableCell>
+
+
                               <TableCell>
                                 <Button
                                   variant="ghost"
@@ -318,7 +339,19 @@ const UtmLinksContent = () => {
                                     <Copy className="h-4 w-4" />
                                   )}
                                 </Button>
+
+                                <Button
+                                  variant="ghost"
+                                  size="sm"
+                                  onClick={() => deleteUtmLink(link.id)}
+                                >
+                                  <Trash className="h-4 w-4 text-destructive" />
+                                </Button>
+
+
                               </TableCell>
+
+
                             </TableRow>
                           )
                         })}

@@ -6,7 +6,7 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import { useSearchParams, useRouter } from 'next/navigation'
 import * as z from 'zod'
-import { Copy, Plus, Check, Link as LinkIcon, ChevronLeft, ChevronRight, ChevronsLeft, ChevronsRight, Trash, Pencil } from 'lucide-react'
+import { Copy, Plus, Check, Link as LinkIcon, ChevronLeft, ChevronRight, ChevronsLeft, ChevronsRight, Trash, Pencil, BarChart3 } from 'lucide-react'
 import { toast } from 'sonner'
 import { useApiClient } from '@/lib/axios'
 
@@ -328,27 +328,36 @@ const UtmLinksContent = () => {
 
 
                               <TableCell>
-                                <Button
-                                  variant="ghost"
-                                  size="sm"
-                                  onClick={() => copyToClipboard(shortUrl, link.code)}
-                                >
-                                  {copiedCode === link.code ? (
-                                    <Check className="h-4 w-4" />
-                                  ) : (
-                                    <Copy className="h-4 w-4" />
-                                  )}
-                                </Button>
+                                <div className="flex items-center gap-1">
+                                  <Button
+                                    variant="ghost"
+                                    size="sm"
+                                    onClick={() => copyToClipboard(shortUrl, link.code)}
+                                  >
+                                    {copiedCode === link.code ? (
+                                      <Check className="h-4 w-4" />
+                                    ) : (
+                                      <Copy className="h-4 w-4" />
+                                    )}
+                                  </Button>
 
-                                <Button
-                                  variant="ghost"
-                                  size="sm"
-                                  onClick={() => deleteUtmLink(link.id)}
-                                >
-                                  <Trash className="h-4 w-4 text-destructive" />
-                                </Button>
+                                  <Button
+                                    variant="ghost"
+                                    size="sm"
+                                    onClick={() => router.push(`/utm-links/${link.code}`)}
+                                    title="View Analytics"
+                                  >
+                                    <BarChart3 className="h-4 w-4" />
+                                  </Button>
 
-
+                                  <Button
+                                    variant="ghost"
+                                    size="sm"
+                                    onClick={() => deleteUtmLink(link.id)}
+                                  >
+                                    <Trash className="h-4 w-4 text-destructive" />
+                                  </Button>
+                                </div>
                               </TableCell>
 
 
